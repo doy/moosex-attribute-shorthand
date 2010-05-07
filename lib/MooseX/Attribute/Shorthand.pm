@@ -2,6 +2,7 @@ package MooseX::Attribute::Shorthand;
 use strict;
 use warnings;
 
+use Moose ();
 use Scalar::Util qw(reftype);
 
 =head1 NAME
