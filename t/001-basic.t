@@ -21,4 +21,55 @@ my $foo = Foo->new;
 is($foo->foo, 'FOO', "expanded properly");
 dies_ok { $foo->foo('sldkfj') } "expanded properly";
 
+{
+    package Bar;
+    use Moose;
+    use MooseX::Attribute::Shorthand my_lazy_build => {
+        lazy => 1,
+        builder => sub { "_build_$_[0]" },
+        predicate => sub {
+            my $name = shift;
+            my $private = $name =~ s/^_//;
+            $private ? "_has_$name" : "has_$name";
+        },
+        clearer => sub {
+            my $name = shift;
+            my $private = $name =~ s/^_//;
+            $private ? "_clear_$name" : "clear_$name";
+        },
+    };
+
+    has public => (
+        is            => 'ro',
+        isa           => 'Str',
+        my_lazy_build => 1,
+    );
+
+    sub _build_public { 'PUBLIC' }
+
+    has _private => (
+        is            => 'ro',
+        isa           => 'Str',
+        my_lazy_build => 1,
+    );
+
+    sub _build__private { 'PRIVATE' }
+}
+
+my $bar = Bar->new;
+can_ok($bar, $_) for qw(has_public clear_public _has_private _clear_private);
+ok(!$bar->can($_), "Bar can't $_") for qw(has__private clear__private);
+
+ok(!$bar->has_public, "doesn't have a value yet");
+is($bar->public, 'PUBLIC', "gets a lazy value");
+ok($bar->has_public, "has a value now");
+$bar->clear_public;
+ok(!$bar->has_public, "doesn't have a value again");
+
+ok(!$bar->_has_private, "doesn't have a value yet");
+is($bar->_private, 'PRIVATE', "gets a lazy value");
+ok($bar->_has_private, "has a value now");
+$bar->_clear_private;
+ok(!$bar->_has_private, "doesn't have a value again");
+
 done_testing;
