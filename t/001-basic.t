@@ -65,11 +65,13 @@ is($bar->public, 'PUBLIC', "gets a lazy value");
 ok($bar->has_public, "has a value now");
 $bar->clear_public;
 ok(!$bar->has_public, "doesn't have a value again");
+dies_ok { $bar->public('sldkfj') } "other options aren't overwritten";
 
 ok(!$bar->_has_private, "doesn't have a value yet");
 is($bar->_private, 'PRIVATE', "gets a lazy value");
 ok($bar->_has_private, "has a value now");
 $bar->_clear_private;
 ok(!$bar->_has_private, "doesn't have a value again");
+dies_ok { $bar->_private('sldkfj') } "other options aren't overwritten";
 
 done_testing;
