@@ -19,8 +19,8 @@ MooseX::Attribute::Shorthand -
 
 sub import {
     my $package = shift;
-    my $caller = caller;
     my %custom_options = @_;
+    my $for_class = delete($custom_options{'-for_class'}) || caller;
     my $role = Moose::Meta::Role->create_anon_role(cache => 1);
     for my $option (keys %custom_options) {
         my $meta_options = delete $custom_options{$option}{'-meta_attr_options'};
@@ -59,7 +59,7 @@ sub import {
         $class->$orig($name, $options);
     });
     Moose::Util::MetaRole::apply_metaroles(
-        for => $caller,
+        for => $for_class,
         class_metaroles => {
             attribute => [$role->name],
         },
