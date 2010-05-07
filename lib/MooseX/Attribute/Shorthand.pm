@@ -55,7 +55,7 @@ sub import {
             }
         }
         # relies on being modified in-place
-        %$options = %new_options;
+        %$options = (%$options, %new_options);
         $class->$orig($name, $options);
     });
     Moose::Util::MetaRole::apply_metaroles(
