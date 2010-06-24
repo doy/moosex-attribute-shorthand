@@ -63,6 +63,9 @@ sub import {
         class_metaroles => {
             attribute => [$role->name],
         },
+        role_metaroles => {
+            class_attribute => [$role->name],
+        }
     );
 }
 
