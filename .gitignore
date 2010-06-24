@@ -9,3 +9,5 @@ Makefile.old
 nytprof.out
 MANIFEST.bak
 *.sw[po]
+.build
+MooseX-Attribute-Shorthand-*
